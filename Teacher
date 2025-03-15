@@ -1,0 +1,22 @@
+import java.io.PrintWriter;
+
+public class Teacher extends Person {
+    private int teacherID;
+    private int phone;
+
+    public Teacher(String name, int teacherID, long phone) {
+        super(name);
+        this.teacherID = teacherID;
+        this.phone = (int) (phone % 10000);  // Extract last 4 digits
+    }
+
+    @Override
+    public int getID() {
+        return teacherID;
+    }
+
+    @Override
+    public void csvPrintln(PrintWriter out) {
+        out.println(getName() + "," + getID() + "," + phone);
+    }
+}
