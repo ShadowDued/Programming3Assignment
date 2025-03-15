@@ -1,0 +1,15 @@
+public abstract class Person implements CSVPrintable {
+    protected String firstName;
+    protected String lastName;
+
+    public Person(String name) {
+        String[] parts = name.split(",");
+        this.firstName = parts[0];
+        this.lastName = parts[1];
+    }
+
+    @Override
+    public String getName() {
+        return firstName + " " + lastName;
+    }
+}
