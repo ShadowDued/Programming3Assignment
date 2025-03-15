@@ -1,0 +1,13 @@
+public class TA extends Student {
+    private int teacherID;
+
+    public TA(String name, int studentID, int teacherID, long phone) {
+        super(name, studentID, phone);
+        this.teacherID = teacherID;
+    }
+
+    @Override
+    public int getID() {
+        return Math.max(super.getID(), teacherID);
+    }
+}
