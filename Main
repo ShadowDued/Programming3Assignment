@@ -1,0 +1,96 @@
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        List<CSVPrintable> people = new ArrayList<>();
+
+        System.out.print("Enter the number of entries: ");
+        int n = Integer.parseInt(scanner.nextLine());
+
+        for (int i = 0; i < n; i++) {
+            while (true) {
+                System.out.println("Enter details (Position Name StudentID TeacherID Phone):");
+                String input = scanner.nextLine().trim();
+                String[] parts = input.split(" ");
+
+                if (parts.length != 5) {
+                    System.out.println("Invalid input format. Please enter again.");
+                    continue;
+                }
+
+                String position = parts[0].toLowerCase();
+                String name = parts[1];
+                int studentID, teacherID;
+                long phone;
+
+                try {
+                    studentID = Integer.parseInt(parts[2]);
+                    teacherID = Integer.parseInt(parts[3]);
+                    phone = Long.parseLong(parts[4]);
+
+                    if (!name.contains(",")) {
+                        throw new IllegalArgumentException("Name must be in 'First,Last' format.");
+                    }
+
+                    if (String.valueOf(studentID).length() != 5 && studentID != 0) {
+                        throw new IllegalArgumentException("StudentID must be 5 digits or '0'.");
+                    }
+
+                    if (String.valueOf(teacherID).length() != 5 && teacherID != 0) {
+                        throw new IllegalArgumentException("TeacherID must be 5 digits or '0'.");
+                    }
+
+                    if (String.valueOf(phone).length() != 10) {
+                        throw new IllegalArgumentException("Phone must be exactly 10 digits.");
+                    }
+
+                    if (position.equals("student") && teacherID != 0) {
+                        throw new IllegalArgumentException("Student must have TeacherID as 0.");
+                    }
+
+                    if (position.equals("teacher") && studentID != 0) {
+                        throw new IllegalArgumentException("Teacher must have StudentID as 0.");
+                    }
+
+                    if (position.equals("ta") && (studentID == 0 || teacherID == 0)) {
+                        throw new IllegalArgumentException("TA must have both StudentID and TeacherID as non-zero.");
+                    }
+
+                    // Create the appropriate object
+                    switch (position) {
+                        case "student":
+                            people.add(new Student(name, studentID, phone));
+                            break;
+                        case "teacher":
+                            people.add(new Teacher(name, teacherID, phone));
+                            break;
+                        case "ta":
+                            people.add(new TA(name, studentID, teacherID, phone));
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Invalid position. Must be 'student', 'teacher', or 'TA'.");
+                    }
+                    break;
+                } catch (Exception e) {
+                    System.out.println("Error: " + e.getMessage() + " Please re-enter.");
+                }
+            }
+        }
+
+        // Writing to CSV
+        try (PrintWriter writer = new PrintWriter(new File("out.csv"))) {
+            for (CSVPrintable person : people) {
+                person.csvPrintln(writer);
+            }
+            System.out.println("Data successfully written to out.csv");
+        } catch (IOException e) {
+            System.out.println("Error writing to file.");
+        }
+
+        scanner.close();
+    }
+}
