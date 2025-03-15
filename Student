@@ -1,0 +1,22 @@
+import java.io.PrintWriter;
+
+public class Student extends Person {
+    private int studentID;
+    private long phone;
+
+    public Student(String name, int studentID, long phone) {
+        super(name);
+        this.studentID = studentID;
+        this.phone = phone;
+    }
+
+    @Override
+    public int getID() {
+        return studentID;
+    }
+
+    @Override
+    public void csvPrintln(PrintWriter out) {
+        out.println(getName() + "," + getID() + "," + phone);
+    }
+}
